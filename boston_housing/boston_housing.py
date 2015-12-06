@@ -52,9 +52,10 @@ def performance_metric(label, prediction):
     ###################################
     ### Step 2. YOUR CODE GOES HERE ###
     ###################################
-
+    # I'm going to use MSE as an error metric. It's fairly standard although it does
+    # have some disadvantages
     # http://scikit-learn.org/stable/modules/classes.html#sklearn-metrics-metrics
-    pass
+    return (((label - prediction)**2).mean())
 
 
 def split_data(city_data):
