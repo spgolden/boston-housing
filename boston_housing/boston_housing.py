@@ -2,14 +2,14 @@
 
 # Load libraries
 import numpy as np
-import pylab as pl
+#import pylab as pl # Need to install pylab...
 from sklearn import datasets
 from sklearn.tree import DecisionTreeRegressor
 
 ################################
 ### ADD EXTRA LIBRARIES HERE ###
 ################################
-
+import sys
 
 def load_data():
     """Load the Boston dataset."""
@@ -31,12 +31,19 @@ def explore_city_data(city_data):
 
     # Please calculate the following values using the Numpy library
     # Size of data (number of houses)?
+    print "Number of houses: {0}".format(housing_features.shape[0])
     # Number of features?
-    # Minimum price?
+    print "Number of features: {0}".format(housing_features.shape[1])
+    # Minimum price? (I'm assuming these are logged)
+    print "Minimum price: {0}".format(housing_prices.min())
     # Maximum price?
+    print "Maximum price: {0}".format(housing_prices.max())
     # Calculate mean price?
-    # Calculate median price?
+    print "Mean price: {0}".format(housing_prices.mean())
+    # Calculate median price? # Not sure on this one yet (no internet on plane)
+    # print "Median price: {0}".format(housing_prices.median())
     # Calculate standard deviation?
+    print "Standard deviation of price: {0}".format(housing_prices.std())
 
 
 def performance_metric(label, prediction):
@@ -185,7 +192,7 @@ def main():
 
     # Explore the data
     explore_city_data(city_data)
-
+    sys.exit(0)
     # Training/Test dataset split
     X_train, y_train, X_test, y_test = split_data(city_data)
 
