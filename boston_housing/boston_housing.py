@@ -10,6 +10,7 @@ from sklearn.tree import DecisionTreeRegressor
 ### ADD EXTRA LIBRARIES HERE ###
 ################################
 import sys
+import random
 
 def load_data():
     """Load the Boston dataset."""
@@ -41,7 +42,7 @@ def explore_city_data(city_data):
     # Calculate mean price?
     print "Mean price: {0}".format(housing_prices.mean())
     # Calculate median price? # Not sure on this one yet (no internet on plane)
-    # print "Median price: {0}".format(housing_prices.median())
+    print "Median price: {0}".format(np.median(housing_prices))
     # Calculate standard deviation?
     print "Standard deviation of price: {0}".format(housing_prices.std())
 
@@ -67,6 +68,17 @@ def split_data(city_data):
     ###################################
     ### Step 3. YOUR CODE GOES HERE ###
     ###################################
+    length = int(len(X)*0.7)
+    train_idx = random.sample(range(0, len(X)), length)
+
+    # It seems like there should be a better way...
+    test_mask = np.ones(len(X), np.bool)
+    test_mask[train_idx] = 0
+    
+    X_train = X[~test_mask]
+    X_test = X[test_mask]
+    y_train = y[~test_mask]
+    y_test = y[test_mask]
 
     return X_train, y_train, X_test, y_test
 
@@ -193,10 +205,10 @@ def main():
 
     # Explore the data
     explore_city_data(city_data)
-    sys.exit(0)
+    
     # Training/Test dataset split
     X_train, y_train, X_test, y_test = split_data(city_data)
-
+    sys.exit(0)
     # Learning Curve Graphs
     max_depths = [1,2,3,4,5,6,7,8,9,10]
     for max_depth in max_depths:
