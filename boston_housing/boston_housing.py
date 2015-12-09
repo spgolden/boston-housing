@@ -1,10 +1,13 @@
+# 
 """Load the Boston dataset and examine its target (label) distribution."""
 
 # Load libraries
 import numpy as np
-#import pylab as pl # Need to install pylab...
+import pylab as pl
 from sklearn import datasets
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import make_scorer
+from sklearn.grid_search import GridSearchCV
 
 ################################
 ### ADD EXTRA LIBRARIES HERE ###
@@ -171,7 +174,7 @@ def fit_predict_model(city_data):
     # Setup a Decision Tree Regressor
     regressor = DecisionTreeRegressor()
 
-    parameters = {'max_depth':(1,2,3,4,5,6,7,8,9,10)}
+    parameters = {'max_depth':[1,2,3,4,5,6,7,8,9,10]}
 
     ###################################
     ### Step 4. YOUR CODE GOES HERE ###
@@ -180,17 +183,20 @@ def fit_predict_model(city_data):
     # 1. Find the best performance metric
     # should be the same as your performance_metric procedure
     # http://scikit-learn.org/stable/modules/generated/sklearn.metrics.make_scorer.html
+    mse_scorer = make_scorer(performance_metric, greater_is_better=False)
 
     # 2. Use gridearch to fine tune the Decision Tree Regressor and find the best model
     # http://scikit-learn.org/stable/modules/generated/sklearn.grid_search.GridSearchCV.html#sklearn.grid_search.GridSearchCV
+    reg = GridSearchCV(regressor, parameters, scoring=mse_scorer)
 
     # Fit the learner to the training data
     print "Final Model: "
     print reg.fit(X, y)
     
     # Use the model to predict the output of a particular sample
-    x = [11.95, 0.00, 18.100, 0, 0.6590, 5.6090, 90.00, 1.385, 24, 680.0, 20.20, 332.09, 12.13]
-    y = reg.predict(x)
+    #  This was throwing a warning about being deprecated
+    x = np.array([11.95, 0.00, 18.100, 0, 0.6590, 5.6090, 90.00, 1.385, 24, 680.0, 20.20, 332.09, 12.13])
+    y = reg.predict(x.reshape(1, -1))
     print "House: " + str(x)
     print "Prediction: " + str(y)
 
@@ -208,7 +214,7 @@ def main():
     
     # Training/Test dataset split
     X_train, y_train, X_test, y_test = split_data(city_data)
-    sys.exit(0)
+    
     # Learning Curve Graphs
     max_depths = [1,2,3,4,5,6,7,8,9,10]
     for max_depth in max_depths:
