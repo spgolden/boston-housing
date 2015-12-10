@@ -8,6 +8,8 @@ from sklearn import datasets
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import make_scorer
 from sklearn.grid_search import GridSearchCV
+from sklearn.metrics import median_absolute_error
+from sklearn.cross_validation import train_test_split
 
 ################################
 ### ADD EXTRA LIBRARIES HERE ###
@@ -59,7 +61,9 @@ def performance_metric(label, prediction):
     # I'm going to use MSE as an error metric. It's fairly standard although it does
     # have some disadvantages
     # http://scikit-learn.org/stable/modules/classes.html#sklearn-metrics-metrics
-    return (((label - prediction)**2).mean())
+    error = median_absolute_error(label, prediction)
+    #print "Error: {0}".format(error)
+    return (error)
 
 
 def split_data(city_data):
@@ -71,18 +75,7 @@ def split_data(city_data):
     ###################################
     ### Step 3. YOUR CODE GOES HERE ###
     ###################################
-    length = int(len(X)*0.7)
-    train_idx = random.sample(range(0, len(X)), length)
-
-    # It seems like there should be a better way...
-    test_mask = np.ones(len(X), np.bool)
-    test_mask[train_idx] = 0
-    
-    X_train = X[~test_mask]
-    X_test = X[test_mask]
-    y_train = y[~test_mask]
-    y_test = y[test_mask]
-
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     return X_train, y_train, X_test, y_test
 
 
@@ -192,6 +185,10 @@ def fit_predict_model(city_data):
     # Fit the learner to the training data
     print "Final Model: "
     print reg.fit(X, y)
+
+    # Report to the user, the final model
+    print reg.best_estimator_
+    print reg.best_score_
     
     # Use the model to predict the output of a particular sample
     #  This was throwing a warning about being deprecated
@@ -199,6 +196,7 @@ def fit_predict_model(city_data):
     y = reg.predict(x.reshape(1, -1))
     print "House: " + str(x)
     print "Prediction: " + str(y)
+    print 'Best Params = {0} achieves a score of {1}'.format(str(reg.best_params_) ,abs(reg.best_score_))
 
 
 def main():
